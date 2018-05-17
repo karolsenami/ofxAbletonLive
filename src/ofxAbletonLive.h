@@ -54,7 +54,8 @@ public:
     ofParameter<float> & getVolume() {return volume;}
     ofParameter<float> & getPan() {return pan;}
     ofParameter<float> & getCrossFader() {return crossfade;}
-
+    int beat; int getBeat() { return beat; }
+    
     int getNumTracks() {return numTracks;}
     int getNumScenes() {return numScenes;}
 
@@ -85,6 +86,8 @@ protected:
     void checkIfTracksLoaded();
     void displayOscMessage(ofxOscMessage &m);
 
+    void requestTempo();
+    void requestTime();
     void requestNumScenes();
     void requestNumTracks();
     void requestTrack(int track);
@@ -94,6 +97,10 @@ protected:
     void requestDeviceParameters(int track, int device, int trackType);
     void requestDeviceParametersRange(int track, int device, int trackType);
 
+    void processTempo(ofxOscMessage &m);
+    void processBeat(ofxOscMessage &m);
+    void processTime(ofxOscMessage &m);
+    
     void processClip(ofxOscMessage &m);
     void processDeviceList(ofxOscMessage &m, int trackType);
     void processDeviceParameters(ofxOscMessage &m, int trackType);

@@ -58,6 +58,8 @@ void ofxAbletonLive::scanLiveSet()
 {
     requestNumScenes();
     requestNumTracks();
+    requestTempo();
+    requestTime();
 }
 
 void ofxAbletonLive::addNewTrack(int track, string name)
@@ -103,6 +105,20 @@ void ofxAbletonLive::initializeSends(ofxAbletonLiveTrack *track, int trackType)
     for (; itr != returnTracks.end(); ++itr) {
         track->addSend(itr->first, trackType);
     }
+}
+
+void ofxAbletonLive::requestTempo()
+{
+    ofxOscMessage msg;
+    msg.setAddress("/live/tempo");
+    sender.sendMessage(msg);
+}
+
+void ofxAbletonLive::requestTime()
+{
+    ofxOscMessage msg;
+    msg.setAddress("/live/time");
+    sender.sendMessage(msg);
 }
 
 void ofxAbletonLive::requestNumScenes()
@@ -230,6 +246,14 @@ void ofxAbletonLive::update()
         else if (m.getAddress() == "/live/name/track") {
             processTrack(m);
         }
+        else if (m.getAddress() == "/live/name/track") {
+            processTrack(m);
+        } else if (m.getAddress() == "/live/tempo") {
+            processTempo(m);
+        }
+        else if (m.getAddress() == "/live/time") {
+            processTime(m);
+        }
     }
 }
 
@@ -356,6 +380,16 @@ void ofxAbletonLive::checkIfTracksLoaded()
         loaded = true;
         ofNotifyEvent(abletonLoadedE);
     }
+}
+
+void ofxAbletonLive::processTempo(ofxOscMessage &m) {
+    tempo = m.getArgAsFloat(0);
+}
+void ofxAbletonLive::processBeat(ofxOscMessage &m) {
+    beat = m.getArgAsInt(0);
+}
+void ofxAbletonLive::processTime(ofxOscMessage &m) {
+    time = m.getArgAsFloat(0);
 }
 
 void ofxAbletonLive::processParameterUpdate(ofxOscMessage &m)

@@ -59,6 +59,9 @@ void ofApp::draw(){
         ofDrawBitmapString(trackString, x, 15);
         x += 300;
     }
+    
+    ofDrawBitmapString("tempo: "+ofToString(live.getTempo()), 10, 130);
+    ofDrawBitmapString("beat: " + ofToString(live.getBeat()), 10, 145);
 }
 
 //--------------------------------------------------------------
