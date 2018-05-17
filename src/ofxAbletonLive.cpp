@@ -204,7 +204,10 @@ void ofxAbletonLive::update()
         ofxOscMessage m;
         receiver.getNextMessage(m);
         //displayOscMessage(m);
-        if      (m.getAddress() == "/live/device/param") {
+        if (m.getAddress() == "/live/beat") {
+            processBeat(m);
+        }
+        else if (m.getAddress() == "/live/device/param") {
             processParameterUpdate(m);
         }
         else if (m.getAddress() == "/live/name/clip") {
