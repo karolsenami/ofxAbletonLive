@@ -7,10 +7,14 @@ class ofxAbletonLiveClip
 {
 public:
     ofxAbletonLiveClip(string name, int track, int clip, ofxOscSender *sender);
+    ofxAbletonLiveClip(string name, int track, int clip, int num, int denom, ofxOscSender *sender);
     
     string getName() {return name;}
     int getTrackIndex() {return track;}
     int getClipIndex() {return clip;}
+    int getQuantum() {return quantum;}
+    int getNum() {return num;}
+    int getDenom() {return denom;}
     
     void play();
     void stop();
@@ -21,6 +25,9 @@ public:
     void setTranspose(int transpose);
     void setDetune(int detune);
     void setWarp(bool warp);
+    void setQuantum(int quantum) { this->quantum = quantum; };
+    void setDenom(int denom) { this->denom = denom; };
+    void setNum(int num) { this->num = num; };
 
     ofParameter<float> & getLoopStart() {return loopStart;}
     ofParameter<float> & getLoopEnd() {return loopEnd;}
@@ -53,5 +60,7 @@ protected:
     string name;
     int track;
     int clip;
+    int quantum;
+    int denom, num;
     ofxOscSender *sender;
 };

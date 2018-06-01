@@ -55,6 +55,7 @@ public:
     ofParameter<float> & getPan() {return pan;}
     ofParameter<float> & getCrossFader() {return crossfade;}
     int beat; int getBeat() { return beat; }
+    int quantum; int getQuantum() { return quantum; }
     
     int getNumTracks() {return numTracks;}
     int getNumScenes() {return numScenes;}
@@ -86,22 +87,27 @@ protected:
     void checkIfTracksLoaded();
     void displayOscMessage(ofxOscMessage &m);
 
+    void requestQuantum();
     void requestTempo();
     void requestTime();
     void requestNumScenes();
     void requestNumTracks();
     void requestTrack(int track);
+    void requestTrackInfo(int track);
     void requestClipsList();
+    void requestClipSignature(int track, int clip);
     void requestDeviceList(int track, int trackType);
     void requestDeviceListMaster();
     void requestDeviceParameters(int track, int device, int trackType);
     void requestDeviceParametersRange(int track, int device, int trackType);
 
+    void processQuantum(ofxOscMessage &m);
     void processTempo(ofxOscMessage &m);
     void processBeat(ofxOscMessage &m);
     void processTime(ofxOscMessage &m);
     
     void processClip(ofxOscMessage &m);
+    void processClipSignature(ofxOscMessage &m);
     void processDeviceList(ofxOscMessage &m, int trackType);
     void processDeviceParameters(ofxOscMessage &m, int trackType);
     void processDeviceParametersRange(ofxOscMessage &m, int trackType);
@@ -110,7 +116,8 @@ protected:
     void processNumScenes(ofxOscMessage &m);
     void processNumTracks(ofxOscMessage &m);
     void processTrack(ofxOscMessage &m);
-
+    void processTrackInfo(ofxOscMessage &m);
+    
     void eventTempo(float &v) {setTempo(tempo);}
     void eventTime(float &v) {setTime(time);}
     void eventOverdub(bool &v) {setOverdub(overdub);}

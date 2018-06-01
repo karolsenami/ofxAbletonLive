@@ -107,6 +107,13 @@ void ofxAbletonLive::initializeSends(ofxAbletonLiveTrack *track, int trackType)
     }
 }
 
+void ofxAbletonLive::requestQuantum()
+{
+    ofxOscMessage msg;
+    msg.setAddress("/live/tempo");
+    sender.sendMessage(msg);
+}
+
 void ofxAbletonLive::requestTempo()
 {
     ofxOscMessage msg;
@@ -118,6 +125,14 @@ void ofxAbletonLive::requestTime()
 {
     ofxOscMessage msg;
     msg.setAddress("/live/time");
+    sender.sendMessage(msg);
+}
+
+void ofxAbletonLive::requestClipSignature(int track, int clip) {
+    ofxOscMessage msg;
+    msg.setAddress("/live/clip/signature");
+    msg.addIntArg(track);
+    msg.addIntArg(clip);
     sender.sendMessage(msg);
 }
 
@@ -139,6 +154,14 @@ void ofxAbletonLive::requestTrack(int track)
 {
     ofxOscMessage msg;
     msg.setAddress("/live/name/track");
+    msg.addIntArg(track);
+    sender.sendMessage(msg);
+}
+
+void ofxAbletonLive::requestTrackInfo(int track)
+{
+    ofxOscMessage msg;
+    msg.setAddress("/live/track/info");
     msg.addIntArg(track);
     sender.sendMessage(msg);
 }
@@ -213,6 +236,9 @@ void ofxAbletonLive::update()
         else if (m.getAddress() == "/live/name/clip") {
             processClip(m);
         }
+        else if (m.getAddress() == "/live/clip/signature") {
+            processClipSignature(m);
+        }
         else if (m.getAddress() == "/live/devicelist") {
             processDeviceList(m, 0);
         }
@@ -249,9 +275,10 @@ void ofxAbletonLive::update()
         else if (m.getAddress() == "/live/name/track") {
             processTrack(m);
         }
-        else if (m.getAddress() == "/live/name/track") {
-            processTrack(m);
-        } else if (m.getAddress() == "/live/tempo") {
+        else if (m.getAddress() == "/live/track/info") {
+            processTrackInfo(m);
+        }
+        else if (m.getAddress() == "/live/tempo") {
             processTempo(m);
         }
         else if (m.getAddress() == "/live/time") {
@@ -292,10 +319,19 @@ void ofxAbletonLive::processClip(ofxOscMessage &m)
 {
     int track = m.getArgAsInt32(0);
     int clip = m.getArgAsInt32(1);
+    //requestClipSignature(track, clip);
     string clipName = m.getArgAsString(2);
     if (tracks.count(track) != 0 && tracks[track]->getClips().count(clip) == 0) {
         tracks[track]->addClip(clipName, clip);
     }
+}
+
+void ofxAbletonLive::processClipSignature(ofxOscMessage &m) {
+    int trackIndex = m.getArgAsInt32(0);
+    int clipIndex = m.getArgAsInt32(1);
+    ofxAbletonLiveClip* clip = tracks[trackIndex]->getClip(clipIndex);
+    clip->setDenom(m.getArgAsInt32(2));
+    clip->setNum(m.getArgAsInt32(3));
 }
 
 void ofxAbletonLive::processDeviceList(ofxOscMessage &m, int trackType)
@@ -324,6 +360,7 @@ void ofxAbletonLive::processDeviceList(ofxOscMessage &m, int trackType)
     }
     
     requestClipsList();
+    requestTrackInfo(0);
 }
 
 void ofxAbletonLive::processDeviceParameters(ofxOscMessage &m, int trackType)
@@ -412,6 +449,7 @@ void ofxAbletonLive::processNumScenes(ofxOscMessage &m)
 
 void ofxAbletonLive::processNumTracks(ofxOscMessage &m)
 {
+    ofLog() << "message :";
     numTracks = m.getArgAsInt32(0);
     for (int t = 0; t < numTracks; t++) {
         requestTrack(t);
@@ -433,6 +471,17 @@ void ofxAbletonLive::processTrack(ofxOscMessage &m)
     string name = m.getArgAsString(1);
     addNewTrack(track, name);
     requestDeviceList(track, 0);
+}
+
+void ofxAbletonLive::processTrackInfo(ofxOscMessage &m)
+{
+    int track = m.getArgAsInt32(0);
+    for(int i=1; i<m.getNumArgs(); i+=3) {
+        ofxAbletonLiveClip* clip = tracks[track]->getClip(m.getArgAsInt(i));
+        clip->setQuantum(m.getArgAsInt(i+2));
+    }
+    quantum = m.getArgAsInt32(4);
+//    tracks[track];
 }
 
 void ofxAbletonLive::prevCue()
@@ -566,7 +615,7 @@ ofxAbletonLiveTrack * ofxAbletonLive::getTrack(int track)
 {
     if (tracks.count(track) == 0)
     {
-        ofLog(OF_LOG_WARNING, "Trying to access track which does not exist!");
+        ofLog(OF_LOG_WARNING, "Trying to access track ("+ofToString(track)+") which does not exist!");
         return NULL;
     }
     else {
@@ -578,7 +627,7 @@ ofxAbletonLiveTrack * ofxAbletonLive::getTrack(string name)
 {
     if (tracksLU.count(name) == 0)
     {
-        ofLog(OF_LOG_WARNING, "Trying to access track which does not exist!");
+        ofLog(OF_LOG_WARNING, "Trying to access track ("+name+") which does not exist!");
         return NULL;
     }
     else {
@@ -590,7 +639,7 @@ ofxAbletonLiveReturnTrack * ofxAbletonLive::getReturnTrack(int track)
 {
     if (tracks.count(track) == 0)
     {
-        ofLog(OF_LOG_WARNING, "Trying to access return track which does not exist!");
+        ofLog(OF_LOG_WARNING, "Trying to access return track ("+ofToString(track)+") which does not exist!");
         return NULL;
     }
     else {
@@ -602,7 +651,7 @@ ofxAbletonLiveReturnTrack * ofxAbletonLive::getReturnTrack(string name)
 {
     if (tracksLU.count(name) == 0)
     {
-        ofLog(OF_LOG_WARNING, "Trying to access return track which does not exist!");
+        ofLog(OF_LOG_WARNING, "Trying to access return track ("+name+") which does not exist!");
         return NULL;
     }
     else {
