@@ -360,7 +360,7 @@ void ofxAbletonLive::processDeviceList(ofxOscMessage &m, int trackType)
     }
     
     requestClipsList();
-    requestTrackInfo(0);
+    requestTrackInfo(track);
 }
 
 void ofxAbletonLive::processDeviceParameters(ofxOscMessage &m, int trackType)
@@ -475,13 +475,14 @@ void ofxAbletonLive::processTrack(ofxOscMessage &m)
 
 void ofxAbletonLive::processTrackInfo(ofxOscMessage &m)
 {
+    ofLog() << "processTrackInfo: "; displayOscMessage(m);
     int track = m.getArgAsInt32(0);
-    for(int i=1; i<m.getNumArgs(); i+=3) {
+    for(int i=2; i<m.getNumArgs(); i+=3) {
         ofxAbletonLiveClip* clip = tracks[track]->getClip(m.getArgAsInt(i));
-        clip->setQuantum(m.getArgAsInt(i+2));
+        if(clip != NULL) {
+            clip->setQuantum((int)m.getArgAsFloat(i+2));
+        }
     }
-    quantum = m.getArgAsInt32(4);
-//    tracks[track];
 }
 
 void ofxAbletonLive::prevCue()
