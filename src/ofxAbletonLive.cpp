@@ -24,6 +24,8 @@ void ofxAbletonLive::setup(string abletonOscHost)
     crossfade.addListener(this, &ofxAbletonLive::eventCrossfade);
     
     scanLiveSet();
+    
+    ofLog() << "AbletonLive::setup";
 }
 
 void ofxAbletonLive::clear()
@@ -360,7 +362,6 @@ void ofxAbletonLive::processDeviceList(ofxOscMessage &m, int trackType)
     }
     
     requestClipsList();
-    requestTrackInfo(track);
 }
 
 void ofxAbletonLive::processDeviceParameters(ofxOscMessage &m, int trackType)
@@ -415,8 +416,10 @@ void ofxAbletonLive::checkIfTracksLoaded()
     for (; itd != masterTrack->getDevices().end(); ++itd) {
         if (!itd->second->getInitialized()) return;
     }
+    
 
     if (!loaded) {
+        requestTrackInfo(0);
         loaded = true;
         ofNotifyEvent(abletonLoadedE);
     }
@@ -475,7 +478,6 @@ void ofxAbletonLive::processTrack(ofxOscMessage &m)
 
 void ofxAbletonLive::processTrackInfo(ofxOscMessage &m)
 {
-    ofLog() << "processTrackInfo: "; displayOscMessage(m);
     int track = m.getArgAsInt32(0);
     for(int i=2; i<m.getNumArgs(); i+=3) {
         ofxAbletonLiveClip* clip = tracks[track]->getClip(m.getArgAsInt(i));
@@ -483,6 +485,7 @@ void ofxAbletonLive::processTrackInfo(ofxOscMessage &m)
             clip->setQuantum((int)m.getArgAsFloat(i+2));
         }
     }
+    quantumLoaded = true;
 }
 
 void ofxAbletonLive::prevCue()

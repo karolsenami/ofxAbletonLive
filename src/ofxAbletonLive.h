@@ -26,7 +26,7 @@ public:
     void refresh(L *listener, M method);
     void refresh();
     
-    bool isLoaded() {return loaded;}
+    bool isLoaded() {return loaded && quantumLoaded;}
     
     void update();
     
@@ -143,7 +143,7 @@ protected:
     ofxOscSender sender;
     ofxOscReceiver receiver;
     string abletonOscHost;
-    bool loaded;
+    bool loaded, quantumLoaded;
     ofEvent<void> abletonLoadedE;
 };
 

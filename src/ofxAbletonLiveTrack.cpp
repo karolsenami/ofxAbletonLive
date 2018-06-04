@@ -162,7 +162,7 @@ ofxAbletonLiveClip * ofxAbletonLiveTrack::getClip(int index)
 {
     if (clips.count(index) == 0)
     {
-        ofLog(OF_LOG_WARNING, "Trying to access clip which does not exist!");
+        ofLog(OF_LOG_WARNING, "Trying to access clip ("+ofToString(index)+") which does not exist!");
         return NULL;
     }
     else {
@@ -174,7 +174,7 @@ ofxAbletonLiveDevice * ofxAbletonLiveTrack::getDevice(int index)
 {
     if (devices.count(index) == 0)
     {
-        ofLog(OF_LOG_WARNING, "Trying to access device which does not exist!");
+        ofLog(OF_LOG_WARNING, "Trying to access device "+ofToString(index)+" which does not exist!");
         return NULL;
     }
     else {
@@ -199,7 +199,7 @@ ofxAbletonLiveClip * ofxAbletonLiveTrack::getClip(string name)
 {
     if (clipsLU.count(name) == 0)
     {
-        ofLog(OF_LOG_WARNING, "Trying to access clip which does not exist!");
+        ofLog(OF_LOG_WARNING, "Trying to access clip ("+name+") which does not exist!");
         return NULL;
     }
     else {
