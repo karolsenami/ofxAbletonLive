@@ -421,8 +421,9 @@ void ofxAbletonLive::checkIfTracksLoaded()
     if (!loaded) {
         requestTrackInfo(0);
         loaded = true;
-        ofNotifyEvent(abletonLoadedE);
     }
+    if(quantumLoaded)
+        ofNotifyEvent(abletonLoadedE);
 }
 
 void ofxAbletonLive::processTempo(ofxOscMessage &m) {
@@ -485,7 +486,11 @@ void ofxAbletonLive::processTrackInfo(ofxOscMessage &m)
             clip->setQuantum((int)m.getArgAsFloat(i+2));
         }
     }
+    
     quantumLoaded = true;
+    if(loaded)
+        ofNotifyEvent(abletonLoadedE);
+
 }
 
 void ofxAbletonLive::prevCue()
