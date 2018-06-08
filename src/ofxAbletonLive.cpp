@@ -24,8 +24,6 @@ void ofxAbletonLive::setup(string abletonOscHost)
     crossfade.addListener(this, &ofxAbletonLive::eventCrossfade);
     
     scanLiveSet();
-    
-    ofLog() << "AbletonLive::setup";
 }
 
 void ofxAbletonLive::clear()
@@ -484,6 +482,10 @@ void ofxAbletonLive::processTrackInfo(ofxOscMessage &m)
         ofxAbletonLiveClip* clip = tracks[track]->getClip(m.getArgAsInt(i));
         if(clip != NULL) {
             clip->setQuantum((int)m.getArgAsFloat(i+2));
+            if(m.getArgAsInt(i+1) == 2) {
+                clipPlayingOnStartIndex = (i-2)/3;
+                playing = true;
+            }
         }
     }
     
@@ -512,6 +514,7 @@ void ofxAbletonLive::play()
     ofxOscMessage msg;
     msg.setAddress("/live/play");
     sender.sendMessage(msg);
+    playing = true;
 }
 
 void ofxAbletonLive::playContinue()
@@ -519,6 +522,7 @@ void ofxAbletonLive::playContinue()
     ofxOscMessage msg;
     msg.setAddress("/live/play/continue");
     sender.sendMessage(msg);
+    playing = true;
 }
 
 void ofxAbletonLive::playSelection()
@@ -526,6 +530,7 @@ void ofxAbletonLive::playSelection()
     ofxOscMessage msg;
     msg.setAddress("/live/play/selection");
     sender.sendMessage(msg);
+    playing = true;
 }
 
 void ofxAbletonLive::stop()
@@ -533,6 +538,7 @@ void ofxAbletonLive::stop()
     ofxOscMessage msg;
     msg.setAddress("/live/stop");
     sender.sendMessage(msg);
+    playing = false;
 }
 
 void ofxAbletonLive::setTempo(float tempo)

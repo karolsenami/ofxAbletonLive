@@ -27,7 +27,7 @@ public:
     void refresh();
     
     bool isLoaded() {return loaded && quantumLoaded;}
-    
+    bool isPlaying() {return playing; }
     void update();
     
     void drawDebugView();
@@ -76,6 +76,8 @@ public:
 
     void clear();
     void scanLiveSet();
+
+    int clipPlayingOnStartIndex;
 
 protected:
 
@@ -143,7 +145,7 @@ protected:
     ofxOscSender sender;
     ofxOscReceiver receiver;
     string abletonOscHost;
-    bool loaded, quantumLoaded;
+    bool loaded, quantumLoaded, playing;
     ofEvent<void> abletonLoadedE;
 };
 
