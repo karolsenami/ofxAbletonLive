@@ -60,7 +60,7 @@ protected:
     string name;
     int track;
     int clip;
-    int quantum = 4;
+    int quantum;
     int denom, num;
     ofxOscSender *sender;
 };
