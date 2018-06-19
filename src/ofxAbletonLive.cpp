@@ -484,6 +484,10 @@ void ofxAbletonLive::processTrackInfo(ofxOscMessage &m)
         ofxAbletonLiveClip* clip = tracks[track]->getClip(m.getArgAsInt(i));
         if(clip != NULL) {
             clip->setQuantum((int)m.getArgAsFloat(i+2));
+            
+            // à OPTI
+            quantums[clip->getName()] = (int)m.getArgAsFloat(i+2);
+            
             if(m.getArgAsInt(i+1) == 2) {
                 clipPlayingOnStartIndex = (i-2)/3;
                 playing = true;

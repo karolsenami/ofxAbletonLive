@@ -21,7 +21,8 @@ public:
     void setup(string abletonOscHost, L *listener, M method);
     template<typename L, typename M>
     void setup(L *listener, M method);
-
+    map<string, int> quantums;
+    
     template<typename L, typename M>
     void refresh(L *listener, M method);
     void refresh();
@@ -55,7 +56,6 @@ public:
     ofParameter<float> & getPan() {return pan;}
     ofParameter<float> & getCrossFader() {return crossfade;}
     int beat; int getBeat() { return beat; }
-    int quantum; int getQuantum() { return quantum; }
     
     int getNumTracks() {return numTracks;}
     int getNumScenes() {return numScenes;}
