@@ -145,7 +145,7 @@ protected:
     ofxOscSender sender;
     ofxOscReceiver receiver;
     string abletonOscHost;
-    bool loaded, quantumLoaded, playing;
+    bool loaded, quantumLoaded, playing, firedEvent = false;
     ofEvent<void> abletonLoadedE;
 };
 

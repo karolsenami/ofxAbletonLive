@@ -420,8 +420,10 @@ void ofxAbletonLive::checkIfTracksLoaded()
         requestTrackInfo(0);
         loaded = true;
     }
-    if(quantumLoaded)
+    if(quantumLoaded && !firedEvent){
         ofNotifyEvent(abletonLoadedE);
+        firedEvent = true;
+    }
 }
 
 void ofxAbletonLive::processTempo(ofxOscMessage &m) {
@@ -490,8 +492,7 @@ void ofxAbletonLive::processTrackInfo(ofxOscMessage &m)
     }
     
     quantumLoaded = true;
-    if(loaded)
-        ofNotifyEvent(abletonLoadedE);
+    
 
 }
 
