@@ -1,4 +1,4 @@
-#include "ofxAbletonLive.h"
+ #include "ofxAbletonLive.h"
 
 
 void ofxAbletonLive::setup(string abletonOscHost)
@@ -417,7 +417,6 @@ void ofxAbletonLive::checkIfTracksLoaded()
     
 
     if (!loaded) {
-        requestTrackInfo(0);
         loaded = true;
     }
     if(quantumLoaded && !firedEvent){
@@ -475,6 +474,9 @@ void ofxAbletonLive::processTrack(ofxOscMessage &m)
     string name = m.getArgAsString(1);
     addNewTrack(track, name);
     requestDeviceList(track, 0);
+    if(track == 0) {
+        requestTrackInfo(track);
+    }
 }
 
 void ofxAbletonLive::processTrackInfo(ofxOscMessage &m)
